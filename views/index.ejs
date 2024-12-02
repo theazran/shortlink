@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Primary Meta Tags -->
+  <title>Shortlink PNBLK</title>
+  <meta name="title" content="Shortlink PNBLK" />
+  <meta name="description" content="Bikin shortlink kini semakin mudah, dan flexibel" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://metatags.io/" />
+  <meta property="og:title" content="Shortlink PNBLK" />
+  <meta property="og:description" content="Bikin shortlink kini semakin mudah, dan flexibel" />
+  <meta property="og:image" content="images/thumb.png" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://metatags.io/" />
+  <meta property="twitter:title" content="Shortlink PNBLK" />
+  <meta property="twitter:description" content="Bikin shortlink kini semakin mudah, dan flexibel" />
+  <meta property="twitter:image" content="images/thumb.png" />
+
+  <!-- Meta Tags Generated with https://metatags.io -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Rubik", serif;
+      background-color: #f3f3f3;
+      color: #333;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 450px;
+      margin: 50px auto;
+      background: #fff;
+      border: 5px solid #000;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 8px 8px 0 #000;
+    }
+
+    .running {
+      border: 3px solid #000;
+      border-radius: 12px;
+      padding: 8px;
+      background-color: #faae2b;
+      box-shadow: 5px 5px 0 #000;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #000;
+    }
+
+    p {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      color: #555;
+    }
+
+    form {
+      display: grid;
+      gap: 20px;
+    }
+
+    label {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 1.1rem;
+      border: 2px solid #000;
+      border-radius: 8px;
+      background: #e5e5e5;
+    }
+
+    input:focus {
+      outline: none;
+      background: #fffb00;
+    }
+
+    button {
+      padding: 15px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ff0000;
+    }
+
+    .shortened-url {
+      margin-top: 20px;
+      padding-top: 15px;
+      background: #fff4b8;
+      border: 3px solid #000;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .total-links {
+      margin-top: 30px;
+      font-size: 30px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    a.saweria-btn {
+      display: inline-flex;
+      align-items: center;
+      background-color: #F44336;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 9px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <center>
+      <h2>PNBLK.MY.ID/*</h2>
+    </center>
+    <br>
+    <form id="shortlinkForm">
+      <div>
+        <label for="url">URL Panjang</label><br>
+        <input type="text" id="url" placeholder="URL Panjang" required>
+      </div>
+      <div>
+        <label for="custom">Custom Alias (Optional)</label><br>
+        <input type="text" id="custom" placeholder="mylink">
+      </div>
+      <button type="submit">Short</button>
+    </form>
+
+    <div id="result" class="shortened-url" style="display: none;">
+      <p id="shortenedUrl"></p>
+    </div>
+
+
+    <div class="total-links" id="totalLinks">Loading...</div>
+
+    <div class="footer">
+      <p>&copy; 2024 PNBLK.</p>
+      <p>Made with ❤️ by M ASRAN.</p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('shortlinkForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const url = document.getElementById('url').value;
+      const custom = document.getElementById('custom').value;
+
+      const response = await fetch('/shorten', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url, custom }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const result = document.getElementById('result');
+        const shortenedUrl = document.getElementById('shortenedUrl');
+
+        shortenedUrl.href = data.shortUrl;
+        shortenedUrl.textContent = data.shortUrl;
+        result.style.display = 'block';
+      } else {
+        alert('Error: Could not create shortlink.');
+      }
+    });
+
+    async function fetchTotalLinks() {
+      try {
+        const response = await fetch('/total');
+        if (response.ok) {
+          const data = await response.json();
+          const totalLinksElement = document.getElementById('totalLinks');
+
+          let randomCount = 0;
+          totalLinksElement.textContent = `${randomCount}+ links`;
+          const interval = setInterval(() => {
+            randomCount = Math.floor(Math.random() * 1000);
+            totalLinksElement.textContent = `${randomCount}+ links`;
+          }, 5);
+
+          setTimeout(() => {
+            clearInterval(interval);
+            totalLinksElement.textContent = `${data.totalLinks}+ links`;
+          }, 2000);
+        } else {
+          document.getElementById('totalLinks').textContent = 'Total Shortlinks: Error loading';
+        }
+      } catch (err) {
+        document.getElementById('totalLinks').textContent = 'Total Shortlinks: Error loading';
+      }
+    }
+    fetchTotalLinks();
+  </script>
+</body>
+
+</html>

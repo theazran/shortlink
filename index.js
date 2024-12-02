@@ -9,8 +9,15 @@ const port = process.env.PORT || 3000;
 const databaseFilePath = path.join(__dirname, 'shortlinks.json');
 
 app.use(express.json());
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
 
-const DOMAIN = 'http://localhost:3000';
+const DOMAIN = 'pnblk.my.id';
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
 const readDataFromFile = () => {
     try {
         const data = fs.readFileSync(databaseFilePath);
@@ -25,30 +32,36 @@ const writeDataToFile = (data) => {
     fs.writeFileSync(databaseFilePath, JSON.stringify(data, null, 2));
 };
 
-app.get('/shorten', (req, res) => {
-    const { url } = req.query;
+app.get('/total', (req, res) => {
+    const data = readDataFromFile();
+    res.json({ totalLinks: data.length });
+});
+
+app.post('/shorten', (req, res) => {
+    const { url, custom } = req.body;
 
     if (!url) {
         return res.status(400).json({ error: 'Original URL is required' });
     }
+
     const data = readDataFromFile();
-    const existingLink = data.find(link => link.url === url);
-    if (existingLink) {
+    const existingLink = data.find(link => link.shortUrl === custom || link.url === url);
+
+    if (existingLink && !custom) {
         return res.json({ shortUrl: `${DOMAIN}/${existingLink.shortUrl}` });
     }
-    const shortUrl = shortid.generate();
-    const newLink = {
-        url,
-        shortUrl,
-        createdAt: new Date().toISOString(),
-    };
+
+    if (custom && data.find(link => link.shortUrl === custom)) {
+        return res.status(400).json({ error: 'Custom alias already exists' });
+    }
+
+    const shortUrl = custom || shortid.generate();
+    const newLink = { url, shortUrl, createdAt: new Date().toISOString() };
 
     data.push(newLink);
     writeDataToFile(data);
 
-    res.json({
-        shortUrl: `${DOMAIN}/${shortUrl}`,
-    });
+    res.json({ shortUrl: `${DOMAIN}/${shortUrl}` });
 });
 
 
@@ -63,7 +76,6 @@ app.get('/:shortUrl', (req, res) => {
     }
     res.redirect(link.url);
 });
-
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
